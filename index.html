@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <style>
+        #main {
+            font-family: monospace;
+            white-space: nowrap;
+            font-size: 14px;
+            line-height: 1.3;
+        }
+
+        span {
+            display: block;
+        }
+
+        .json-object-body,
+        .json-array-body {
+            padding-left: 20px;
+            border-left: 1px dotted gray;
+        }
+
+        .json-pair span {
+            display: inline;
+        }
+
+        .json-pair + .json-pair {
+            display: block;
+        }
+
+        .json-pair span.json-object-body,
+        .json-pair span.json-array-body {
+            display: block;
+        }
+
+        .json-comma {
+            display: inline;
+        }
+
+        .json-array-body > span {
+            display: block;
+        }
+
+    </style>
+</head>
+<body>
+    <div id="main"></div>
+    <script src="main.js"></script>
+
+</body>
+</html>

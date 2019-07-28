@@ -1,0 +1,12 @@
+Todo:
+- Make commas display on one line
+
+primitive:
+    - number
+    - string
+    - boolean
+    - null
+
+
+
+primitieves share line with keys in an object
