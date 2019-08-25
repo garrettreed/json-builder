@@ -16,9 +16,9 @@ function JsonObject(props) {
     return React.createElement(
         React.Fragment,
         {},
-        React.createElement(JsonOpen),
+        React.createElement("span", { className: "json-object-open" }, "{"),
         React.createElement("span", { className: "json-object-body" }, ...elements),
-        React.createElement(JsonClose)
+        React.createElement("span", { className: "json-object-close" }, "}")
     );
 }
 
@@ -38,9 +38,18 @@ function JsonArray(props) {
     return React.createElement(
         React.Fragment,
         {},
-        React.createElement(ArrayOpen),
+        React.createElement("span", { className: "json-array-open" }, "["),
         React.createElement("span", { className: "json-array-body" }, ...elements),
-        React.createElement(ArrayClose)
+        React.createElement("span", { className: "json-array-close" }, "]")
+    );
+}
+
+function JsonPrimitive(props) {
+    const val = props.value === null ? "NULL" : props.value;
+    return React.createElement(
+        "span",
+        { className: "json-primitive" },
+        typeof val === "string" ? `"${val}"` : val.toString()
     );
 }
 
@@ -52,31 +61,6 @@ function getElementType(val) {
     } else {
         return JsonObject;
     }
-}
-
-function JsonOpen() {
-    return React.createElement("span", { className: "json-object-open" }, "{");
-}
-
-function JsonClose() {
-    return React.createElement("span", { className: "json-object-close" }, "}");
-}
-
-function ArrayOpen() {
-    return React.createElement("span", { className: "json-array-open" }, "[");
-}
-
-function ArrayClose() {
-    return React.createElement("span", { className: "json-array-close" }, "]");
-}
-
-function JsonPrimitive(props) {
-    const val = props.value === null ? "NULL" : props.value;
-    return React.createElement(
-        "span",
-        { className: "json-primitive" },
-        typeof val === "string" ? `"${val}"` : val.toString()
-    );
 }
 
 const testObject = {
