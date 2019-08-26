@@ -1,25 +1,47 @@
-function JsonObject(props) {
-    const elements = Object.entries(props.value).map(function([key, val], index) {
-        const Elem = getElementType(val);
+class JsonObject extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            value: props.value
+        };
+    }
+
+    handleClick() {
+        console.log(event);
+        var obj = Object.assign({}, this.state.value);
+        obj.blah = 42;
+        this.setState({ value: obj });
+    }
+
+    render() {
+        const elements = Object.entries(this.state.value).map(
+            function([key, val], index) {
+                const Elem = getElementType(val);
+
+                return React.createElement(
+                    "span",
+                    { className: "json-object-pair" },
+                    React.createElement(
+                        "span",
+                        { className: "json-key", onClick: this.handleClick.bind(this) },
+                        `"${key}": `
+                    ),
+                    React.createElement(Elem, { value: val }),
+                    index < Object.keys(this.state.value).length - 1
+                        ? React.createElement("span", { className: "json-comma" }, ",")
+                        : null
+                );
+            }.bind(this)
+        );
 
         return React.createElement(
-            "span",
-            { className: "json-object-pair" },
-            React.createElement("span", { className: "json-key" }, `"${key}": `),
-            React.createElement(Elem, { value: val }),
-            index < Object.keys(props.value).length - 1
-                ? React.createElement("span", { className: "json-comma" }, ",")
-                : null
+            React.Fragment,
+            {},
+            React.createElement("span", { className: "json-object-open" }, "{"),
+            React.createElement("span", { className: "json-object-body" }, ...elements),
+            React.createElement("span", { className: "json-object-close" }, "}")
         );
-    });
-
-    return React.createElement(
-        React.Fragment,
-        {},
-        React.createElement("span", { className: "json-object-open" }, "{"),
-        React.createElement("span", { className: "json-object-body" }, ...elements),
-        React.createElement("span", { className: "json-object-close" }, "}")
-    );
+    }
 }
 
 function JsonArray(props) {
@@ -89,7 +111,11 @@ const testObject = {
     ]
 };
 
+const testObjectSimple = {
+    a: 1
+};
+
 ReactDOM.render(
-    React.createElement(JsonObject, { value: testObject }),
+    React.createElement(JsonObject, { value: testObjectSimple }),
     document.getElementById("main")
 );
