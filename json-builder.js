@@ -20,18 +20,31 @@ function JsonBuilder(props) {
             onChange: handleChange,
             value: textValue
         }),
-        React.createElement(JsonObject, { value: objectValue })
+        React.createElement(
+            "div",
+            { className: "json-container" },
+            React.createElement(JsonObject, { value: objectValue })
+        )
     );
 }
 
 function JsonObject(props) {
     const elements = Object.entries(props.value).map(function([key, val], index, arr) {
+        const [visible, setVisible] = React.useState(true);
         const Elem = getElementType(val);
+
         return React.createElement(
             "span",
             { className: "json-object-pair" },
+            Elem !== JsonPrimitive
+                ? React.createElement(
+                      "button",
+                      { className: "json-collapse", onClick: () => setVisible(!visible) },
+                      visible ? "▼" : "►"
+                  )
+                : null,
             React.createElement("span", { className: "json-key" }, `"${key}": `),
-            React.createElement(Elem, { value: val }),
+            React.createElement(Elem, { value: val, visible: visible }),
             index < arr.length - 1
                 ? React.createElement("span", { className: "json-comma" }, ",")
                 : null
@@ -39,10 +52,12 @@ function JsonObject(props) {
     });
 
     return React.createElement(
-        "div",
-        { className: "json-container" },
+        React.Fragment,
+        {},
         React.createElement("span", { className: "json-object-open" }, "{"),
-        React.createElement("span", { className: "json-object-body" }, ...elements),
+        props.visible === false
+            ? React.createElement("span", {}, "…")
+            : React.createElement("span", { className: "json-object-body" }, ...elements),
         React.createElement("span", { className: "json-object-close" }, "}")
     );
 }
@@ -64,7 +79,9 @@ function JsonArray(props) {
         React.Fragment,
         {},
         React.createElement("span", { className: "json-array-open" }, "["),
-        React.createElement("span", { className: "json-array-body" }, ...elements),
+        props.visible === false
+            ? React.createElement("span", {}, "…")
+            : React.createElement("span", { className: "json-array-body" }, ...elements),
         React.createElement("span", { className: "json-array-close" }, "]")
     );
 }
@@ -73,8 +90,8 @@ function JsonPrimitive(props) {
     const val = props.value === null ? "NULL" : props.value;
     return React.createElement(
         "span",
-        { className: "json-primitive" },
-        typeof val === "string" ? `"${val}"` : val.toString()
+        { className: `json-primitive json-pimitive--${typeof val}` },
+        typeof props.value === "string" ? `"${val}"` : val.toString()
     );
 }
 
