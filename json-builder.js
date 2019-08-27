@@ -1,31 +1,36 @@
 function JsonBuilder(props) {
-    const [textValue, setTextValue] = React.useState(JSON.stringify(props.value || {}));
     const [objectValue, setObjectValue] = React.useState(props.value || {});
-
-    function handleChange(evt) {
-        setTextValue(evt.target.value);
-        try {
-            setObjectValue(JSON.parse(evt.target.value));
-        } catch (err) {
-            console.log("Invalid json. Not printing.", err);
-        }
-    }
 
     return React.createElement(
         React.Fragment,
         {},
-        React.createElement("textarea", {
-            className: "json-input",
-            rows: "10",
-            onChange: handleChange,
-            value: textValue
-        }),
+        React.createElement(JsonInput, { setObjectValue: setObjectValue, value: props.value }),
         React.createElement(
             "div",
             { className: "json-container" },
             React.createElement(JsonObject, { value: objectValue })
         )
     );
+}
+
+function JsonInput(props) {
+    const [textValue, setTextValue] = React.useState(JSON.stringify(props.value || {}));
+
+    function handleChange(evt) {
+        setTextValue(evt.target.value);
+        try {
+            props.setObjectValue(JSON.parse(evt.target.value));
+        } catch (err) {
+            console.log("Invalid json. Not printing.", err);
+        }
+    }
+
+    return React.createElement("textarea", {
+        className: "json-input",
+        rows: "10",
+        onChange: handleChange,
+        value: textValue
+    });
 }
 
 function JsonObject(props) {
