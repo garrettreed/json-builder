@@ -27,7 +27,6 @@ function JsonInput(props) {
 
     return React.createElement("textarea", {
         className: "json-input",
-        rows: "10",
         onChange: handleChange,
         value: textValue
     });
@@ -35,25 +34,12 @@ function JsonInput(props) {
 
 function JsonObject(props) {
     const elements = Object.entries(props.value).map(function([key, val], index, arr) {
-        const [visible, setVisible] = React.useState(true);
-        const Elem = getElementType(val);
-
-        return React.createElement(
-            "span",
-            { className: "json-object-pair" },
-            Elem !== JsonPrimitive
-                ? React.createElement(
-                      "button",
-                      { className: "json-collapse", onClick: () => setVisible(!visible) },
-                      visible ? "▼" : "►"
-                  )
-                : null,
-            React.createElement("span", { className: "json-key" }, `"${key}": `),
-            React.createElement(Elem, { value: val, visible: visible }),
-            index < arr.length - 1
-                ? React.createElement("span", { className: "json-comma" }, ",")
-                : null
-        );
+        return React.createElement(JsonObjectPair, {
+            objKey: key,
+            objVal: val,
+            isLast: index < arr.length - 1,
+            elementType: getElementType(val)
+        });
     });
 
     return React.createElement(
@@ -67,9 +53,31 @@ function JsonObject(props) {
     );
 }
 
+// Ideally, this would be the body of the JsonObject entries map callback, however hooks cannot be
+// used in functions that are not components.
+function JsonObjectPair(props) {
+    const [visible, setVisible] = React.useState(true);
+
+    return React.createElement(
+        "span",
+        { className: "json-object-pair" },
+        props.elementType !== JsonPrimitive
+            ? React.createElement(
+                  "button",
+                  { className: "json-collapse", onClick: () => setVisible(!visible) },
+                  visible ? "▼" : "►"
+              )
+            : null,
+        React.createElement("span", { className: "json-key" }, `"${props.objKey}": `),
+        React.createElement(props.elementType, { value: props.objVal, visible: visible }),
+        props.isLast ? null : React.createElement("span", { className: "json-comma" }, ",")
+    );
+}
+
 function JsonArray(props) {
     const elements = props.value.map(function(val, index) {
         const Elem = getElementType(val);
+
         return React.createElement(
             "span",
             { className: "json-array-item" },
