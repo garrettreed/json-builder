@@ -46,7 +46,7 @@ function JsonObject(props) {
         React.Fragment,
         {},
         React.createElement("span", { className: "json-object-open" }, "{"),
-        props.visible === false
+        props.collapsed === true
             ? React.createElement("span", {}, "…")
             : React.createElement("span", { className: "json-object-body" }, ...elements),
         React.createElement("span", { className: "json-object-close" }, "}")
@@ -56,21 +56,28 @@ function JsonObject(props) {
 // Ideally, this would be the body of the JsonObject entries map callback, however hooks cannot be
 // used in functions that are not components.
 function JsonObjectPair(props) {
-    const [visible, setVisible] = React.useState(true);
+    const [collapsed, setCollapsed] = React.useState(false);
 
     return React.createElement(
         "span",
         { className: "json-object-pair" },
         props.elementType !== JsonPrimitive
-            ? React.createElement(
-                  "button",
-                  { className: "json-collapse", onClick: () => setVisible(!visible) },
-                  visible ? "▼" : "►"
-              )
+            ? React.createElement(CollapseButton, {
+                  collapsed: collapsed,
+                  toggleCollapse: () => setCollapsed(!collapsed)
+              })
             : null,
         React.createElement("span", { className: "json-key" }, `"${props.objKey}": `),
-        React.createElement(props.elementType, { value: props.objVal, visible: visible }),
+        React.createElement(props.elementType, { value: props.objVal, collapsed: collapsed }),
         props.isLast ? null : React.createElement("span", { className: "json-comma" }, ",")
+    );
+}
+
+function CollapseButton(props) {
+    return React.createElement(
+        "button",
+        { className: "json-collapse", onClick: props.toggleCollapse },
+        props.collapsed ? "►" : "▼"
     );
 }
 
@@ -92,7 +99,7 @@ function JsonArray(props) {
         React.Fragment,
         {},
         React.createElement("span", { className: "json-array-open" }, "["),
-        props.visible === false
+        props.collapsed === true
             ? React.createElement("span", {}, "…")
             : React.createElement("span", { className: "json-array-body" }, ...elements),
         React.createElement("span", { className: "json-array-close" }, "]")
