@@ -33,6 +33,8 @@ function JsonInput(props) {
 }
 
 function JsonObject(props) {
+    const [collapsed, setCollapsed] = React.useState(false);
+
     const elements = Object.entries(props.value).map(function([key, val], index, arr) {
         return React.createElement(JsonObjectPair, {
             objKey: key,
@@ -45,8 +47,14 @@ function JsonObject(props) {
     return React.createElement(
         React.Fragment,
         {},
+        Object.keys(props).indexOf("collapsed") < 0
+            ? React.createElement(CollapseButton, {
+                  collapsed: collapsed,
+                  toggleCollapse: () => setCollapsed(!collapsed)
+              })
+            : null,
         React.createElement("span", { className: "json-object-open" }, "{"),
-        props.collapsed === true
+        props.collapsed === true || collapsed === true
             ? React.createElement("span", {}, "…")
             : React.createElement("span", { className: "json-object-body" }, ...elements),
         React.createElement("span", { className: "json-object-close" }, "}")
@@ -68,7 +76,10 @@ function JsonObjectPair(props) {
               })
             : null,
         React.createElement("span", { className: "json-key" }, `"${props.objKey}": `),
-        React.createElement(props.elementType, { value: props.objVal, collapsed: collapsed }),
+        React.createElement(props.elementType, {
+            value: props.objVal,
+            collapsed: collapsed
+        }),
         props.isLast ? null : React.createElement("span", { className: "json-comma" }, ",")
     );
 }
@@ -76,12 +87,17 @@ function JsonObjectPair(props) {
 function CollapseButton(props) {
     return React.createElement(
         "button",
-        { className: "json-collapse", onClick: props.toggleCollapse },
-        props.collapsed ? "►" : "▼"
+        {
+            className: `json-collapse${props.collapsed ? " json-collapse--collapsed" : ""}`,
+            onClick: props.toggleCollapse
+        },
+        "▼"
     );
 }
 
 function JsonArray(props) {
+    const [collapsed, setCollapsed] = React.useState(false);
+
     const elements = props.value.map(function(val, index) {
         const Elem = getElementType(val);
 
@@ -98,8 +114,14 @@ function JsonArray(props) {
     return React.createElement(
         React.Fragment,
         {},
+        Object.keys(props).indexOf("collapsed") < 0
+            ? React.createElement(CollapseButton, {
+                  collapsed: collapsed,
+                  toggleCollapse: () => setCollapsed(!collapsed)
+              })
+            : null,
         React.createElement("span", { className: "json-array-open" }, "["),
-        props.collapsed === true
+        props.collapsed || collapsed === true
             ? React.createElement("span", {}, "…")
             : React.createElement("span", { className: "json-array-body" }, ...elements),
         React.createElement("span", { className: "json-array-close" }, "]")
