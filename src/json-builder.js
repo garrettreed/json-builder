@@ -39,7 +39,7 @@ function JsonObject(props) {
         return React.createElement(JsonObjectPair, {
             objKey: key,
             objVal: val,
-            isLast: index < arr.length - 1,
+            isLast: index === arr.length - 1,
             elementType: getElementType(val)
         });
     });
@@ -98,7 +98,7 @@ function JsonArray(props) {
 
     const elements = props.value.map(function(val, index) {
         const Elem = getElementType(val);
-
+        console.log("last?", val, index, props.value.length - 1);
         return React.createElement(
             "span",
             { className: "json-array-item" },
