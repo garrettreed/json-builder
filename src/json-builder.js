@@ -54,7 +54,7 @@ function JsonObject(props) {
               })
             : null,
         React.createElement("span", { className: "json-object-open" }, "{"),
-        props.collapsed === true || collapsed === true
+        props.parentCollapsed === true || collapsed === true
             ? React.createElement("span", {}, "…")
             : React.createElement("span", { className: "json-object-body" }, ...elements),
         React.createElement("span", { className: "json-object-close" }, "}")
@@ -78,7 +78,7 @@ function JsonObjectPair(props) {
         React.createElement("span", { className: "json-key" }, `"${props.objKey}": `),
         React.createElement(props.elementType, {
             value: props.objVal,
-            collapsed: collapsed
+            parentCollapsed: collapsed
         }),
         props.isLast ? null : React.createElement("span", { className: "json-comma" }, ",")
     );
@@ -114,14 +114,14 @@ function JsonArray(props) {
     return React.createElement(
         React.Fragment,
         {},
-        Object.keys(props).indexOf("collapsed") < 0
+        Object.keys(props).indexOf("parentCollapsed") < 0
             ? React.createElement(CollapseButton, {
                   collapsed: collapsed,
                   toggleCollapse: () => setCollapsed(!collapsed)
               })
             : null,
         React.createElement("span", { className: "json-array-open" }, "["),
-        props.collapsed || collapsed === true
+        props.parentCollapsed || collapsed === true
             ? React.createElement("span", {}, "…")
             : React.createElement("span", { className: "json-array-body" }, ...elements),
         React.createElement("span", { className: "json-array-close" }, "]")
