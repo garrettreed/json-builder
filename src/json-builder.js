@@ -47,12 +47,10 @@ function JsonObject(props) {
     return React.createElement(
         React.Fragment,
         {},
-        Object.keys(props).indexOf("collapsed") < 0
-            ? React.createElement(CollapseButton, {
-                  collapsed: collapsed,
-                  toggleCollapse: () => setCollapsed(!collapsed)
-              })
-            : null,
+        React.createElement(CollapseButton, {
+            collapsed: collapsed,
+            toggleCollapse: () => setCollapsed(!collapsed)
+        }),
         React.createElement("span", { className: "json-object-open" }, "{"),
         props.parentCollapsed === true || collapsed === true
             ? React.createElement("span", {}, "…")
@@ -114,12 +112,10 @@ function JsonArray(props) {
     return React.createElement(
         React.Fragment,
         {},
-        Object.keys(props).indexOf("parentCollapsed") < 0
-            ? React.createElement(CollapseButton, {
-                  collapsed: collapsed,
-                  toggleCollapse: () => setCollapsed(!collapsed)
-              })
-            : null,
+        React.createElement(CollapseButton, {
+            collapsed: collapsed,
+            toggleCollapse: () => setCollapsed(!collapsed)
+        }),
         React.createElement("span", { className: "json-array-open" }, "["),
         props.parentCollapsed || collapsed === true
             ? React.createElement("span", {}, "…")
